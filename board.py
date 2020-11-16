@@ -29,6 +29,9 @@ class Board():
     def display_text_board(self):
         for line in self.board:
             print(line)
+    def draw_background(self, window):
+        window.fill()
+
 
     def update_board(self, player, move):
         #update internal

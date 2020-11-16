@@ -31,13 +31,5 @@ class Game():
         return Move(row,col)
         #check its within Board
 
-def main():
-    pygame.init()
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
 
 #g = Game()
