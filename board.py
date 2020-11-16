@@ -1,4 +1,5 @@
 import numpy as np
+import pygame
 
 class Board():
 
@@ -7,7 +8,7 @@ class Board():
         self.width = width
         self.height = height
 
-        #makes board
+        #makes board representation
         for i in range(0, width):
             player = 1
 
