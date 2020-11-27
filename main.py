@@ -1,5 +1,5 @@
 import pygame
-from draughts.constants import WIDTH, HEIGHT, WHITE
+from draughts.constants import WIDTH, HEIGHT, WHITE, SQUARE_SIZE
 from draughts.game import Game
 #from game import Game
 #constants
@@ -10,6 +10,11 @@ FPS = 60
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Draughts - By Candidate 184513 :)")
 
+def get_square_coords_from_pos(position):
+    x, y = position
+    row = y//SQUARE_SIZE
+    col = x//SQUARE_SIZE
+    return row, col
 
 def main():
     pygame.init()
@@ -25,6 +30,8 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()
+                row, col = get_square_coords_from_pos(position)
+                game.click(row, col)
 
 
 

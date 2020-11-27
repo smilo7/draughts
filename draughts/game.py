@@ -32,6 +32,8 @@ class Game():
         return Move(row,col)
         #check its within Board
 
+    def click(self, row, col):
+        self.board.select_peice(row, col)
 
     #update loop
     def update(self):
