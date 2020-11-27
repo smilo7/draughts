@@ -1,13 +1,14 @@
 # Checkers game by cand no 184513
 #knowledge and reasoning coursework november 2020
-import board
-import move
 import pygame
+from .board import Board
+
 
 class Game():
-    def __init__(self):
-        self.board = Board(8, 8)
+    def __init__(self, window):
+        self.board = Board(8, 8, window)
         self.finished = False
+        self.window = window #this is the pygame window
 
     def begin_game(self):
         board.display_text_board()
@@ -30,6 +31,14 @@ class Game():
             print(char)
         return Move(row,col)
         #check its within Board
+
+
+    #update loop
+    def update(self):
+        #draw board
+        self.board.draw()
+        #update display
+        pygame.display.update()
 
 
 #g = Game()
