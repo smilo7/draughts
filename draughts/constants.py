@@ -19,3 +19,9 @@ RED = (200,   0,   0)
 RED_CLICKED = (100, 0 , 0)
 BLACK_CLICKED = (100,  0, 0)
 ALT_COLOUR =(219, 206, 180)
+GREEN = (0,255,0)
+
+
+#directions for peices
+BLACK_DIRECTION = -1
+RED_DIRECTION = +1

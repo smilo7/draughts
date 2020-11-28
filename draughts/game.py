@@ -33,6 +33,10 @@ class Game():
         #check its within Board
 
     def click(self, row, col):
+        """
+        When a mouse clicks this method is called
+        which then calls the select_peice method in the board object
+        """
         self.board.select_peice(row, col)
 
     #update loop
