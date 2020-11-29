@@ -1,5 +1,5 @@
 import pygame
-from draughts.constants import WIDTH, HEIGHT, WHITE, SQUARE_SIZE
+from draughts.constants import WIDTH, HEIGHT, BLACK, WHITE, SQUARE_SIZE
 from draughts.game import Game
 #from game import Game
 #constants
@@ -19,7 +19,8 @@ def get_square_coords_from_pos(position):
 def main():
     pygame.init()
     clock = pygame.time.Clock()
-    game = Game(WINDOW)
+    font = pygame.font.SysFont("Comic Sans MS", 30)
+    game = Game(WINDOW, font)
 
     running = True
     while running:
@@ -27,6 +28,15 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    #reset the game
+                    print("Game reset")
+                    game = Game(WINDOW, font)
+                if event.key == pygame.K_ESCAPE:
+                    print("Thanks for playing :)")
+                    running = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()
