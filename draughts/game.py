@@ -2,7 +2,7 @@
 #knowledge and reasoning coursework november 2020
 import pygame
 from .board import Board
-from .constants import BLACK, RED
+from .constants import BLACK, RED, WIDTH, HEIGHT
 
 class Game():
     def __init__(self, window, font):
@@ -16,8 +16,11 @@ class Game():
     def change_turn(self):
         if self.turn == "R":
             self.turn = "B"
+            #ai's turn
+            #call minimax
         else:
             self.turn="R"
+            #players turn
 
     def whos_turn_is_it(self):
         return self.turn
@@ -25,22 +28,25 @@ class Game():
     def display_turns(self):
         if self.whos_turn_is_it() == "R":
             label = self.font.render("Red's Go", 1, RED)
-            self.window.blit(label, (20, 850))
+            self.window.blit(label, (WIDTH*0.01, HEIGHT*0.85))
         elif self.whos_turn_is_it() == "B":
             label = self.font.render("Black's Go", 1, BLACK)
-            self.window.blit(label, (20, 850))
+            self.window.blit(label, (WIDTH*0.01, HEIGHT*0.85))
 
     def display_taken_peices(self):
         reds_left = self.font.render("Reds left: " + str(self.board.red_peices), 1, RED)
-        self.window.blit(reds_left, (20, 900))
+        self.window.blit(reds_left, (WIDTH*0.01, HEIGHT*0.9))
 
         blacks_left = self.font.render("Blacks left: " + str(self.board.black_peices), 1, BLACK)
-        self.window.blit(blacks_left, (150, 900))
+        self.window.blit(blacks_left, (WIDTH*0.5, HEIGHT*0.9))
 
 
     def display_controls(self):
-        label = self.font.render("ESC to Quit, press R to restart", 1, BLACK)
-        self.window.blit(label, (480, 960))
+        label = self.font.render("ESC to Exit, R to Restart", 1, BLACK)
+        self.window.blit(label, (WIDTH*0.3, HEIGHT*0.95))
+
+    def display_winner():
+        self.board
 
     def click(self, row, col):
         """

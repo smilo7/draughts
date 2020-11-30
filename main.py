@@ -19,7 +19,7 @@ def get_square_coords_from_pos(position):
 def main():
     pygame.init()
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont("Comic Sans MS", 30)
+    font = pygame.font.SysFont("Comic Sans MS", 24)
     game = Game(WINDOW, font)
 
     running = True

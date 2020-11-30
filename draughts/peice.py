@@ -14,6 +14,7 @@ class Peice:
         self.direction = direction #forward +1 or backwards -1
         self.clicked = None
         self.valid_moves = {"L": [], "R": []} #valid moves from peices current position, none by default (until clicked)
+        self.hops = {"L": [], "R": []}
 
     def check_make_king(self):
         if (self.direction == -1):
@@ -27,6 +28,7 @@ class Peice:
         self.row, self.col = row, col
         #check if its at the kingrow to make king (depending on direction)
         self.check_make_king()
+        print("King!", self.king)
 
     def clear_possible_moves(self):
         self.valid_moves = {"L": [], "R": []}
@@ -44,8 +46,9 @@ class Peice:
         any_valid_moves = False
         for direction, moves in self.valid_moves.items():
             #print("HERE!", moves)
-            if len(moves[0]) > 0:
-                any_valid_moves = True
+            for move in moves:
+                if len(move[0]) > 0:
+                    any_valid_moves = True
         return any_valid_moves
 
     def valid_move_for_direction(self, direction):
@@ -53,10 +56,17 @@ class Peice:
         if there is one or more valid moves for a given direction (left or right)
         return true, otherwise false
         """
-        if len(self.valid_moves[direction][0]) != 0:
-            return True
-        else:
-            return False
+        for move in self.valid_moves[direction]:
+            if len(move) !=0:
+                return True
+            else:
+                return False
+            """
+            if len(self.valid_moves[direction][0]) != 0:
+                return True
+            else:
+                return False
+            """
 
 
 
@@ -64,13 +74,23 @@ class Peice:
         """
         are the given coordinates (row, col) a valid move for this peice?
         return true or false
-        """
+
         valid = False
         for direction, moves in self.valid_moves.items():
             if (self.valid_move_for_direction(direction)):
-                for move in moves[0]:
-                    move = move
-                    if move[0] == row and move[1] == col:
+                for move in moves:
+                    if len(move) !=0:
+
+                        if move[0][0] == row and move[0][1] == col:
+                            valid = True
+                            print("VALID", valid)
+        """
+
+        valid = False
+        for direction, moves in self.valid_moves.items():
+            for move in moves:
+                if move:
+                    if move[0][0] == row and move[0][1] == col:
                         valid = True
         return valid
 
@@ -89,8 +109,13 @@ class Peice:
         Draw valid moves by putting a nice circle there
         """
 
+        #for direction, moves in self.valid_moves.items():
+    #        if
+
         for direction, moves in self.valid_moves.items():
-            if (self.valid_move_for_direction(direction)):
-                for move in moves[0]:
-                    move = move
-                    pygame.draw.circle(self.window, GREEN, (move[1]* SQUARE_SIZE + 20 + 20/4 , move[0]*SQUARE_SIZE + 20 + 20/4), 20)
+            if (self.valid_move_for_direction(direction) or self.king):
+                for move in moves:
+                    if (len(move)!=0):
+                        #print("drawing", move)
+                        move = move[0]
+                        pygame.draw.circle(self.window, GREEN, (move[1]* SQUARE_SIZE + 20 + 20/4 , move[0]*SQUARE_SIZE + 20 + 20/4), 20)

@@ -144,12 +144,11 @@ class Board():
             if (self.get_peice(x,y).type == turn): # check the peice that has been clicked is the current turn
                 self.clicked_peice = self.get_peice(x, y)
                 #check legal moves for this peice and store in its valid moves field
-                self.clicked_peice.valid_moves = self.legal_moves(self.clicked_peice)
+                self.clicked_peice.valid_moves, self.clicked_peice.hops = self.legal_moves(self.clicked_peice)
 
         #if a peice has not been clicked, check if there is any legal moves for that peice at the location clicked
         elif (self.clicked_peice != None): #make sure there is a currently selected peice
             if self.clicked_peice.valid_move_at_coords(x, y): #if peice contains x and y as a valid move
-                print("is this running")
                 self.move_peice(x, y)
                 end_go = True
                 #turn over a peice has been moved
@@ -204,52 +203,27 @@ class Board():
         check_pts = [2,4,6]
 
         for i in check_pts:
-            if taker_peice.direction == -1 or taker_peice.king: #backward
+            if taker_peice.direction == -1: #backward
                 if move[0] == taker_peice.row+i:
                     if move[1] == taker_peice.col+i: #if its backwards and to the left
-                        if i == 2:
-                            self.delete_peice(move[0]-1,move[1]-1)
-                        elif i == 4:
-                            self.delete_peice(move[0]-1,move[1]-1)
-                            self.delete_peice(move[0]-3,move[1]-3)
-                        elif i == 6:
-                            self.delete_peice(move[0]-1,move[1]-1)
-                            self.delete_peice(move[0]-3,move[1]-3)
-                            self.delete_peice(move[0]-5,move[1]-5)
+                        self.delete_peice(move[0]-1,move[1]-1)
+                        self.delete_peice(move[0]-3,move[1]-3)
+                        self.delete_peice(move[0]-5,move[1]-5)
                     if move[1] == taker_peice.col-i: #if its backwards and to the right
-                        if i == 2:
-                            self.delete_peice(move[0]-1,move[1]+1)
-                        elif i == 4:
-                            self.delete_peice(move[0]-1,move[1]+1)
-                            self.delete_peice(move[0]-3,move[1]+3)
-                        elif i == 6:
-                            self.delete_peice(move[0]-1,move[1]+1)
-                            self.delete_peice(move[0]-3,move[1]+3)
-                            self.delete_peice(move[0]-5,move[1]-5)
-                return
+                        self.delete_peice(move[0]-1,move[1]+1)
+                        self.delete_peice(move[0]-3,move[1]+3)
+                        self.delete_peice(move[0]-5,move[1]-5)
 
-            elif taker_peice.direction == +1 or taker_peice.king:
+            elif taker_peice.direction == +1:
                 if move[0] == taker_peice.row-i:
                     if move[1] == taker_peice.col+i: #if its forward and to the right
-                        if i == 2:
-                            self.delete_peice(move[0]+1,move[1]-1)
-                        elif i == 4:
-                            self.delete_peice(move[0]+1,move[1]-1)
-                            self.delete_peice(move[0]+3,move[1]-3)
-                        elif i == 6:
-                            self.delete_peice(move[0]+1,move[1]-1)
-                            self.delete_peice(move[0]+3,move[1]-3)
-                            self.delete_peice(move[0]+5,move[1]-5)
+                        self.delete_peice(move[0]+1,move[1]-1)
+                        self.delete_peice(move[0]+3,move[1]-3)
+                        self.delete_peice(move[0]+5,move[1]-5)
                     if move[1] == taker_peice.col-i: #if its forward and to the left
-                        if i == 2:
-                            self.delete_peice(move[0]+1, move[1]+1)
-                        elif i == 4:
-                            self.delete_peice(move[0]+1, move[1]+1)
-                            self.delete_peice(move[0]+3,move[1]+3)
-                        elif i == 6:
-                            self.delete_peice(move[0]+1, move[1]+1)
-                            self.delete_peice(move[0]+3,move[1]+3)
-                            self.delete_peice(move[0]+5,move[1]+5)
+                        self.delete_peice(move[0]+1, move[1]+1)
+                        self.delete_peice(move[0]+3,move[1]+3)
+                        self.delete_peice(move[0]+5,move[1]+5)
 
     def delete_peice(self, row, col):
         """
@@ -303,69 +277,56 @@ class Board():
 
     def legal_moves(self, peice):
         moves = {"L": None, "R": None}
-        moves["L"] = self.legal_moves_left(peice)
-        moves["R"] = self.legal_moves_right(peice)
+        hops = {"L": None, "R": None}
+
+        moves["L"], hops["L"] = self.legal_moves_left(peice)
+        moves["R"], hops["R"] = self.legal_moves_right(peice)
 
         #if forced jumping is on, then only return last move
         if self.force_hops:
             pass
 
         print(moves)
-        return moves
+        print(hops)
+        return moves, hops
 
 
     def legal_moves_left(self, peice):
     #def look_for_moves_left(self, peice):
         moves = []
-
-
-        if (peice.king):
-            start_row, start_col = peice.row - 1, peice.col - 1
-            moves.append(self.traverse_left(start_row, start_col, peice.colour, +1, hop_count=0))
-            start_row, start_col = peice.row + 1, peice.col + 1
-            moves.append(self.traverse_left(start_row, start_col, peice.colour, -1, hop_count=0))
-
-
+        hops = []
         if peice.direction == +1 or peice.king: #forward (this is the player side)
             start_row, start_col = peice.row - 1, peice.col - 1
-            moves.append(self.traverse_left(start_row, start_col, peice.colour, peice.direction, hop_count=0))
+            possible_moves, hops = self.traverse_left(start_row, start_col, peice.colour, peice.direction, hop_count=0)
 
-        if(peice.direction == -1 or peice.king): #the AI aaaaaaa!
+            moves.append(possible_moves)
+            hops.append(hops)
+
+
+        elif(peice.direction == -1 or peice.king): #the AI aaaaaaa!
             start_row, start_col = peice.row + 1, peice.col + 1
-            moves.append(self.traverse_left(start_row, start_col, peice.colour, peice.direction, hop_count=0))
+            possible_moves, hops = self.traverse_left(start_row, start_col, peice.colour, peice.direction, hop_count=0)
+            moves.append(possible_moves)
+            hops.append(hops)
 
-
-
-        if peice.king == True:
-            print("KING HERE", moves)
-
-        return moves
+        return moves, hops
 
     def legal_moves_right(self, peice):
         moves = []
-
-        if (peice.king):
-            print("THIS BIT OF CODE IS RUNNING")
-            start_row, start_col = peice.row - 1, peice.col + 1
-            moves.append(self.traverse_right(start_row, start_col, peice.colour, +1, hop_count=0))
-            start_row, start_col = peice.row + 1, peice.col - 1
-            moves.append(self.traverse_right(start_row, start_col, peice.colour, -1, hop_count=0))
-
+        hops = []
         if peice.direction == +1 or peice.king: #forward (this is the player side)
             start_row, start_col = peice.row - 1, peice.col + 1
-            moves.append(self.traverse_right(start_row, start_col, peice.colour, peice.direction, hop_count=0))
+            possible_moves, hops = self.traverse_right(start_row, start_col, peice.colour, peice.direction, hop_count=0)
+            moves.append(possible_moves)
+            hops.append(hops)
 
-        if(peice.direction == -1 or peice.king): #the AI aaaaaaa!
+        elif(peice.direction == -1 or peice.king): #the AI aaaaaaa!
             start_row, start_col = peice.row + 1, peice.col - 1
-            moves.append(self.traverse_right(start_row, start_col, peice.colour, peice.direction, hop_count=0))
+            possible_moves, hops = self.traverse_right(start_row, start_col, peice.colour, peice.direction, hop_count=0)
+            moves.append(possible_moves)
+            hops.append(hops)
 
-
-
-        if peice.king == True:
-            print("KING HERE", moves)
-
-        return moves
-
+        return moves, hops
 
     def traverse_left(self, start_row, start_col, peice_colour, direction, hop_count):
         moves = []
@@ -405,11 +366,12 @@ class Board():
                             if direction == +1:
                                 #add the possible move, and the hopped peice
                                 #hopped_peices[(start_row,start_col)] = (start_row+1, start_col+1)
-
-                                self.hopped_peices[(start_row,start_col)] = (start_row+1, start_col+1)
+                                hopped_peices.append((start_row+1, start_col+1))
+                                #self.hopped_peices[(start_row,start_col)] = (start_row+1, start_col+1)
                             else:
                                 #hopped_peices.append (start_row-1, start_col-1)
-                                self.hopped_peices[(start_row,start_col)] = (start_row-1, start_col-1)
+                                hopped_peices.append((start_row-1, start_col-1))
+                                #self.hopped_peices[(start_row,start_col)] = (start_row-1, start_col-1)
 
                             #call traverse function again from the sqaure beyond it to see if there is another hop possible
 
@@ -422,17 +384,18 @@ class Board():
 
                             #increase hop count
                             hop_count += 1
-                            moves += ( (self.traverse_left(start_row, start_col, peice_colour, direction, hop_count)) )
+                            moves, hopped_peices += ( (self.traverse_left(start_row, start_col, peice_colour, direction, hop_count)) )
+
                             #moves.append(self.traverse_left(start_row, start_col, peice_colour, direction)[0])
                             #moves.append(self.traverse_left(start_row, start_col, peice_colour, direction)[1])
                         else:
                             pass
 
-        return moves
+        return moves, hopped_peices
 
     def traverse_right(self, start_row, start_col, peice_colour, direction, hop_count):
         moves = []
-
+        hopped_peices = []
         #if its not in the board dont bother adding any possible moves
         if (self.check_in_board_size(start_row, start_col)):
 
@@ -466,9 +429,14 @@ class Board():
 
                             #peice should be taken now at the location behind the hop
                             if direction == +1:
-                                self.hopped_peices[(start_row,start_col)] = (start_row+1, start_col-1)
+                                #add the possible move, and the hopped peice
+                                #hopped_peices[(start_row,start_col)] = (start_row+1, start_col+1)
+                                hopped_peices.append((start_row+1, start_col-1))
+                                #self.hopped_peices[(start_row,start_col)] = (start_row+1, start_col+1)
                             else:
-                                self.hopped_peices[(start_row,start_col)] = (start_row-1, start_col+1)
+                                #hopped_peices.append (start_row-1, start_col-1)
+                                hopped_peices.append((start_row-1, start_col+1))
+                                #self.hopped_peices[(start_row,start_col)] = (start_row-1, start_col-1)
 
                             #call traverse function again from the sqaure beyond it to see if there is another hop possible
 
@@ -481,10 +449,10 @@ class Board():
 
                             #increase hop count
                             hop_count += 1
-                            moves += ( (self.traverse_right(start_row, start_col, peice_colour, direction, hop_count)) )
+                            moves += ( (self.traverse_left(start_row, start_col, peice_colour, direction, hop_count)) )
                             #moves.append(self.traverse_left(start_row, start_col, peice_colour, direction)[0])
                             #moves.append(self.traverse_left(start_row, start_col, peice_colour, direction)[1])
                         else:
                             pass
 
-        return moves
+        return moves, hopped_peices
