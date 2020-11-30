@@ -25,3 +25,6 @@ GREEN = (0,255,0)
 #directions for peices
 BLACK_DIRECTION = -1
 RED_DIRECTION = +1
+
+#for minimax
+MAX_DEPTH = 3

@@ -3,6 +3,7 @@
 import pygame
 from .board import Board
 from .constants import BLACK, RED, WIDTH, HEIGHT
+from .minimax import minimax
 
 class Game():
     def __init__(self, window, font):
@@ -18,9 +19,16 @@ class Game():
             self.turn = "B"
             #ai's turn
             #call minimax
+            #self.computer_move()
         else:
             self.turn="R"
             #players turn
+
+    def computer_move(self):
+        evaluation, new_board = minimax(self.board, 2, True)
+        #update board
+        #self.board = new_board
+        self.change_turn()
 
     def whos_turn_is_it(self):
         return self.turn
@@ -65,6 +73,8 @@ class Game():
     def update(self):
         #draw board
         self.board.draw()
+
+        #menu stuff
         self.display_turns()
         self.display_taken_peices()
         self.display_controls()

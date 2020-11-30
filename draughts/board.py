@@ -85,6 +85,14 @@ class Board():
                     self.board[row_i][col_i] = Peice(row_i, col_i, "R", RED, RED_CLICKED, RED_DIRECTION, self.window)
                     self.red_peices += 1
 
+    def return_all_peices_type(self, type):
+        peices = []
+        for row in self.board:
+            for peice in row:
+                if peice!=0 and peice.type==type:
+                    peices.append(peice)
+        return peices
+
     def display_text_board(self):
         """
         Display a text version of the board
@@ -194,6 +202,15 @@ class Board():
         else:
             pass
 
+    def decrement_peice_number(self, peice_type, amount):
+        """
+        decrease peice number by value, based on taker_peice type
+        """
+        if peice_type ==  "R":
+            self.black_peices - amount
+        else:
+            self.red_peices - amount
+
     def take_peices_diagonal(self, taker_peice, move):
         #find any squares inbetween the taker_peice row and col and the coordinates of move
         #check if there is a peice at this coordinate
@@ -209,6 +226,7 @@ class Board():
                     if move[1] == taker_peice.col+i: #if its backwards and to the left
                         if i == 2:
                             self.delete_peice(move[0]-1,move[1]-1)
+                            self.decrement_peice_number(taker_peice.type, 1)
                         elif i == 4:
                             self.delete_peice(move[0]-1,move[1]-1)
                             self.delete_peice(move[0]-3,move[1]-3)
@@ -233,6 +251,7 @@ class Board():
                     if move[1] == taker_peice.col+i: #if its forward and to the right
                         if i == 2:
                             self.delete_peice(move[0]+1,move[1]-1)
+                            self.decrement_peice_number(taker_peice.type, 1)
                         elif i == 4:
                             self.delete_peice(move[0]+1,move[1]-1)
                             self.delete_peice(move[0]+3,move[1]-3)
