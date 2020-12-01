@@ -3,7 +3,7 @@
 import pygame
 from .board import Board
 from .constants import BLACK, RED, WIDTH, HEIGHT
-from .minimax import minimax
+from .minimax import draughts_AI
 
 class Game():
     def __init__(self, window, font):
@@ -12,6 +12,7 @@ class Game():
         self.window = window #this is the pygame window
         self.turn = "R" # starting turn for red
         self.font = font
+        self.computer = draughts_AI()
 
 
     def change_turn(self):
@@ -25,11 +26,12 @@ class Game():
             #players turn
 
     def computer_move(self):
-        evaluation, new_board = minimax(self.board, 3, True)
+        evaluation, new_board = self.computer.minimax(self.board, 5, True, alpha=float('-inf'), beta=float('inf'))
         #update board
         print("ai board", new_board)
         self.board = new_board
         print("ai move done")
+        self.computer.states_searched = 0 #reset searched states
         self.change_turn()
 
     def whos_turn_is_it(self):
