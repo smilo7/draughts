@@ -2,14 +2,14 @@ import pygame
 from .constants import ALT_COLOUR, RED_CLICKED, GREEN, SQUARE_SIZE, WIDTH, ROWS, COLS
 
 class Peice:
-    def __init__(self, row, col, type, colour, clicked_colour, direction, window):
+    def __init__(self, row, col, type, colour, clicked_colour, direction):
         self.row = row
         self.col = col
         self.type = type #"R" or "B" for red or black
         self.colour = colour
         self.clicked_colour = clicked_colour
         self.king = False
-        self.window = window
+        #self.window = window
         self.size = (WIDTH // 8) // 2.5
         self.direction = direction #forward +1 or backwards -1
         self.clicked = None
@@ -95,16 +95,16 @@ class Peice:
         return valid
 
 
-    def draw(self):
+    def draw(self, window):
         back_size = self.size + 1
-        pygame.draw.circle(self.window, ALT_COLOUR, (self.col * SQUARE_SIZE + back_size + back_size/4, self.row*SQUARE_SIZE + back_size + back_size/4), back_size)
+        pygame.draw.circle(window, ALT_COLOUR, (self.col * SQUARE_SIZE + back_size + back_size/4, self.row*SQUARE_SIZE + back_size + back_size/4), back_size)
 
-        pygame.draw.circle(self.window, self.colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
+        pygame.draw.circle(window, self.colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
 
-    def draw_clicked(self):
-        pygame.draw.circle(self.window, self.clicked_colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
+    def draw_clicked(self, window):
+        pygame.draw.circle(window, self.clicked_colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
 
-    def draw_valid_moves(self):
+    def draw_valid_moves(self, window):
         """
         Draw valid moves by putting a nice circle there
         """
@@ -118,4 +118,4 @@ class Peice:
                     if (len(move)!=0):
                         #print("drawing", move)
                         move = move[0]
-                        pygame.draw.circle(self.window, GREEN, (move[1]* SQUARE_SIZE + 20 + 20/4 , move[0]*SQUARE_SIZE + 20 + 20/4), 20)
+                        pygame.draw.circle(window, GREEN, (move[1]* SQUARE_SIZE + 20 + 20/4 , move[0]*SQUARE_SIZE + 20 + 20/4), 20)

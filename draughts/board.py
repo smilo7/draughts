@@ -7,14 +7,14 @@ from .peice import Peice
 
 class Board():
 
-    def __init__(self, width, height, window):
+    def __init__(self, width, height):
         self.board = np.zeros(shape=(width, height)).astype(int).tolist()
         #board background
         self.backboard = np.zeros(shape=(width, height)).astype(int).tolist()
         self.width = width
         self.height = height
         self.square_size = 800 / width
-        self.window = window
+        #self.window = window
         self.clicked_peice = None
         self.hopped_peices = {}
         self.red_peices = 0
@@ -32,7 +32,7 @@ class Board():
         """
         calculates the score of the board
         """
-        return self.red_peices - self.black_peices
+        return self.black_peices - self.red_peices
 
     def return_board(self):
         return self.board
@@ -79,10 +79,10 @@ class Board():
         for row_i, row in enumerate(self.board):
             for col_i, col in enumerate(row):
                 if (col == 1): #its a black peice!
-                    self.board[row_i][col_i] = Peice(row_i, col_i, "B", BLACK, BLACK_CLICKED, BLACK_DIRECTION, self.window)
+                    self.board[row_i][col_i] = Peice(row_i, col_i, "B", BLACK, BLACK_CLICKED, BLACK_DIRECTION)
                     self.black_peices +=1
                 elif (col == 2): #if its red
-                    self.board[row_i][col_i] = Peice(row_i, col_i, "R", RED, RED_CLICKED, RED_DIRECTION, self.window)
+                    self.board[row_i][col_i] = Peice(row_i, col_i, "R", RED, RED_CLICKED, RED_DIRECTION)
                     self.red_peices += 1
 
     def return_all_peices_type(self, type):
@@ -101,38 +101,38 @@ class Board():
         for line in self.board:
             print(line)
 
-    def draw(self):
+    def draw(self, window):
         """
-        Draw function for the board. Deals with
+        Draw function for the board. Draws to the given pygame window.
         """
-        self.draw_background()
-        self.draw_peices()
+        self.draw_background(window)
+        self.draw_peices(window)
 
         #draw clicked peice if there is one to draw
         if self.clicked_peice != None:
-            self.clicked_peice.draw_clicked()
-            self.clicked_peice.draw_valid_moves() #draw its valid moves if there is any
+            self.clicked_peice.draw_clicked(window)
+            self.clicked_peice.draw_valid_moves(window) #draw its valid moves if there is any
 
 
 
 
-    def draw_background(self):
+    def draw_background(self, window):
         """
         draws the backround of the draughts board
         """
-        self.window.fill(LIGHT_BROWN)
+        window.fill(LIGHT_BROWN)
         for row in range(0, ROWS):
             for col in range (row % 2, COLS, 2):
-                pygame.draw.rect(self.window, DARK_BROWN, (row*SQUARE_SIZE, col*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(window, DARK_BROWN, (row*SQUARE_SIZE, col*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-    def draw_peices(self):
+    def draw_peices(self, window):
         """
         loop through board, if there is a peice draw it
         """
         for row in self.board:
             for peice in row:
                 if peice != 0:
-                    peice.draw()
+                    peice.draw(window)
 
     def select_peice(self, x, y, turn):
         """
@@ -157,7 +157,6 @@ class Board():
         #if a peice has not been clicked, check if there is any legal moves for that peice at the location clicked
         elif (self.clicked_peice != None): #make sure there is a currently selected peice
             if self.clicked_peice.valid_move_at_coords(x, y): #if peice contains x and y as a valid move
-                print("is this running")
                 self.move_peice(x, y)
                 end_go = True
                 #turn over a peice has been moved
@@ -329,14 +328,12 @@ class Board():
         if self.force_hops:
             pass
 
-        print(moves)
         return moves
 
 
     def legal_moves_left(self, peice):
     #def look_for_moves_left(self, peice):
         moves = []
-
 
         if (peice.king):
             start_row, start_col = peice.row - 1, peice.col - 1
@@ -353,18 +350,12 @@ class Board():
             start_row, start_col = peice.row + 1, peice.col + 1
             moves.append(self.traverse_left(start_row, start_col, peice.colour, peice.direction, hop_count=0))
 
-
-
-        if peice.king == True:
-            print("KING HERE", moves)
-
         return moves
 
     def legal_moves_right(self, peice):
         moves = []
 
         if (peice.king):
-            print("THIS BIT OF CODE IS RUNNING")
             start_row, start_col = peice.row - 1, peice.col + 1
             moves.append(self.traverse_right(start_row, start_col, peice.colour, +1, hop_count=0))
             start_row, start_col = peice.row + 1, peice.col - 1
@@ -378,11 +369,6 @@ class Board():
             start_row, start_col = peice.row + 1, peice.col - 1
             moves.append(self.traverse_right(start_row, start_col, peice.colour, peice.direction, hop_count=0))
 
-
-
-        if peice.king == True:
-            print("KING HERE", moves)
-
         return moves
 
 
@@ -393,7 +379,6 @@ class Board():
         if (self.check_in_board_size(start_row, start_col)):
 
             #if there is nothing there simply return the standard legt choice from that position (if a hop hasnt already been done)
-            print("hop_count", hop_count)
             if (self.check_for_peice(start_row, start_col) != True):
                 if (hop_count == 0):
                     moves.append( (start_row, start_col) )
@@ -456,7 +441,6 @@ class Board():
         if (self.check_in_board_size(start_row, start_col)):
 
             #if there is nothing there simply return the standard legt choice from that position (if a hop hasnt already been done)
-            print("hop_count", hop_count)
             if (self.check_for_peice(start_row, start_col) != True):
                 if (hop_count == 0):
                     moves.append( (start_row, start_col) )

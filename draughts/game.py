@@ -7,7 +7,7 @@ from .minimax import minimax
 
 class Game():
     def __init__(self, window, font):
-        self.board = Board(8, 8, window)
+        self.board = Board(8, 8)
         self.finished = False
         self.window = window #this is the pygame window
         self.turn = "R" # starting turn for red
@@ -19,15 +19,17 @@ class Game():
             self.turn = "B"
             #ai's turn
             #call minimax
-            #self.computer_move()
+            self.computer_move()
         else:
             self.turn="R"
             #players turn
 
     def computer_move(self):
-        evaluation, new_board = minimax(self.board, 2, True)
+        evaluation, new_board = minimax(self.board, 3, True)
         #update board
-        #self.board = new_board
+        print("ai board", new_board)
+        self.board = new_board
+        print("ai move done")
         self.change_turn()
 
     def whos_turn_is_it(self):
@@ -72,7 +74,7 @@ class Game():
     #update loop
     def update(self):
         #draw board
-        self.board.draw()
+        self.board.draw(self.window)
 
         #menu stuff
         self.display_turns()
