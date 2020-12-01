@@ -60,12 +60,13 @@ def moves_for_a_board(board, peice_type):
 
             #if (peice.valid_move_for_direction(direction) or peice.king):
                 for move in moves:
-                    print("MOVE", move)
-                    move = move[0] #access the tuple in the list
-                    copied_board = deepcopy(board) #copy the board
-                    copied_peice = copied_board.get_peice(peice.row, peice.col) #make a copy of the peice so we don't mess with the original boards peice
-                    new_board = mock_move(copied_board, copied_peice, move) #make a mock_move on the copied board and store it in new_board
-                    possible_board_states.append(new_board)
+                    if len(move) !=0:
+                        print("MOVE", move)
+                        move = move[0] #access the tuple in the list
+                        copied_board = deepcopy(board) #copy the board
+                        copied_peice = copied_board.get_peice(peice.row, peice.col) #make a copy of the peice so we don't mess with the original boards peice
+                        new_board = mock_move(copied_board, copied_peice, move) #make a mock_move on the copied board and store it in new_board
+                        possible_board_states.append(new_board)
     print(possible_board_states)
     return possible_board_states
 
