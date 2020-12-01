@@ -28,7 +28,7 @@ class Peice:
         self.row, self.col = row, col
         #check if its at the kingrow to make king (depending on direction)
         self.check_make_king()
-        print("King!", self.king)
+        #print("King!", self.king)
 
     def clear_possible_moves(self):
         self.valid_moves = {"L": [], "R": []}
@@ -96,10 +96,15 @@ class Peice:
 
 
     def draw(self, window):
+
         back_size = self.size + 1
         pygame.draw.circle(window, ALT_COLOUR, (self.col * SQUARE_SIZE + back_size + back_size/4, self.row*SQUARE_SIZE + back_size + back_size/4), back_size)
 
         pygame.draw.circle(window, self.colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
+        if self.king:
+            crown = pygame.image.load('crown.png')
+            window.blit(crown, (self.col * SQUARE_SIZE + self.size-7,self.row * SQUARE_SIZE + self.size-7))
+
 
     def draw_clicked(self, window):
         pygame.draw.circle(window, self.clicked_colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
@@ -118,4 +123,5 @@ class Peice:
                     if (len(move)!=0):
                         #print("drawing", move)
                         move = move[0]
-                        pygame.draw.circle(window, GREEN, (move[1]* SQUARE_SIZE + 20 + 20/4 , move[0]*SQUARE_SIZE + 20 + 20/4), 20)
+                        pygame.draw.circle(window, GREEN, (move[1]* SQUARE_SIZE + self.size + self.size/4, move[0]* SQUARE_SIZE + self.size + self.size/4), self.size)
+                        #pygame.draw.circle(window, GREEN, (move[1]* SQUARE_SIZE + 20 + 20/4 , move[0]*SQUARE_SIZE + 20 + 20/4), 20)

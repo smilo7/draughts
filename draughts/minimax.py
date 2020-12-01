@@ -20,7 +20,7 @@ class draughts_AI:
         self.states_searched+=1
         #base case, once this is hit the recursion unravels.
         if current_depth == 0 or current_board.get_winner() != None:
-            print("SEARCHED,", self.states_searched)
+            #print("SEARCHED,", self.states_searched)
             return current_board.evaluate(), current_board#return the score
 
         #black is the maximiser as this is the colour our ai plays
@@ -73,7 +73,7 @@ class draughts_AI:
                 #if (peice.valid_move_for_direction(direction) or peice.king):
                     for move in moves:
                         if len(move) !=0:
-                            print("MOVE", move)
+                            #print("MOVE", move)
                             move = move[0] #access the tuple in the list
                             copied_board = deepcopy(board) #copy the board
                             copied_peice = copied_board.get_peice(peice.row, peice.col) #make a copy of the peice so we don't mess with the original boards peice
@@ -91,7 +91,7 @@ class draughts_AI:
         """
         row = move[0]
         col = move[1]
-        print(row, col)
+        #print(row, col)
 
         board.board[row][col] = peice #move peice on board
         board.board[peice.row][peice.col] = 0 #make old position empty

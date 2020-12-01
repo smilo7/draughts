@@ -21,6 +21,9 @@ BLACK_CLICKED = (50,  50, 50)
 ALT_COLOUR =(219, 206, 180)
 GREEN = (0,255,0)
 
+#colours for menu
+LIGHT_GREY = (163, 160, 160)
+DARK_GREY = (102, 102, 102)
 
 #directions for peices
 BLACK_DIRECTION = -1

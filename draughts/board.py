@@ -1,6 +1,6 @@
 import numpy as np
 import pygame
-from .constants import WHITE, BLACK, RED, ROWS, COLS, SQUARE_SIZE, DARK_BROWN, LIGHT_BROWN, BLACK_DIRECTION, RED_DIRECTION, RED_CLICKED, BLACK_CLICKED
+from .constants import WIDTH, WHITE, BLACK, RED, ROWS, COLS, SQUARE_SIZE, DARK_BROWN, LIGHT_BROWN, BLACK_DIRECTION, RED_DIRECTION, RED_CLICKED, BLACK_CLICKED
 from .peice import Peice
 
 
@@ -20,6 +20,8 @@ class Board():
         self.red_peices = 0
         self.black_peices = 0
         self.force_hops = False
+        self.black_king = 0
+        self.red_kings = 0
         self.winner = None
 
 
@@ -86,12 +88,32 @@ class Board():
                     self.red_peices += 1
 
     def return_all_peices_type(self, type):
+        """
+        loops through board and returns all peices of a given type
+        param: peice type (red or black)
+        returns: list of peices
+        """
         peices = []
         for row in self.board:
             for peice in row:
                 if peice!=0 and peice.type==type:
                     peices.append(peice)
         return peices
+
+    def get_king_num(self, type):
+        """
+        For a given type of peice red ("R") or black ("B")
+        return the number of kings
+        params: type, type of peice, red or black
+        returns: int, number of kings
+        """
+        king_count = 0
+        for row in self.board:
+            for peice in row:
+                if peice!=0 and peice.type==type and peice.king:
+                    king_count+=1
+        return king_count
+
 
     def display_text_board(self):
         """
@@ -148,18 +170,21 @@ class Board():
         x = int(x)
         y = int(y)
 
-        if (self.check_for_peice(x, y)):
-            if (self.get_peice(x,y).type == turn): # check the peice that has been clicked is the current turn
-                self.clicked_peice = self.get_peice(x, y)
-                #check legal moves for this peice and store in its valid moves field
-                self.clicked_peice.valid_moves = self.legal_moves(self.clicked_peice)
+        if (x <= self.width-1 and y <= self.height-1):
+            print("CLICK COORDS",x, y)
+            print(self.width, self.height)
+            if (self.check_for_peice(x, y)):
+                if (self.get_peice(x,y).type == turn): # check the peice that has been clicked is the current turn
+                    self.clicked_peice = self.get_peice(x, y)
+                    #check legal moves for this peice and store in its valid moves field
+                    self.clicked_peice.valid_moves = self.legal_moves(self.clicked_peice)
 
-        #if a peice has not been clicked, check if there is any legal moves for that peice at the location clicked
-        elif (self.clicked_peice != None): #make sure there is a currently selected peice
-            if self.clicked_peice.valid_move_at_coords(x, y): #if peice contains x and y as a valid move
-                self.move_peice(x, y)
-                end_go = True
-                #turn over a peice has been moved
+            #if a peice has not been clicked, check if there is any legal moves for that peice at the location clicked
+            elif (self.clicked_peice != None): #make sure there is a currently selected peice
+                if self.clicked_peice.valid_move_at_coords(x, y): #if peice contains x and y as a valid move
+                    self.move_peice(x, y)
+                    end_go = True
+                    #turn over a peice has been moved
         return end_go
 
 
@@ -178,6 +203,9 @@ class Board():
         self.clicked_peice = None
         #check if there is a winner
         self.winner = self.get_winner()
+        #update the number of kings
+        self.red_kings, self.black_kings = self.get_king_num("R"), self.get_king_num("B")
+        print("number of kings", self.red_kings, self.black_kings)
         #remove peices possible legal moves once it has moved
         #self.clicked_peice.clear_possible_moves()
 
@@ -206,9 +234,11 @@ class Board():
         decrease peice number by value, based on taker_peice type
         """
         if peice_type ==  "R":
-            self.black_peices - amount
+            self.black_peices = self.black_peices - amount
+            #print("black peices left", self.black_peices)
         else:
-            self.red_peices - amount
+            self.red_peices = self.red_peices - amount
+            #print("red peices left", self.red_peices)
 
     def take_peices_diagonal(self, taker_peice, move):
         #find any squares inbetween the taker_peice row and col and the coordinates of move
@@ -229,20 +259,25 @@ class Board():
                         elif i == 4:
                             self.delete_peice(move[0]-1,move[1]-1)
                             self.delete_peice(move[0]-3,move[1]-3)
+                            self.decrement_peice_number(taker_peice.type, 2)
                         elif i == 6:
                             self.delete_peice(move[0]-1,move[1]-1)
                             self.delete_peice(move[0]-3,move[1]-3)
                             self.delete_peice(move[0]-5,move[1]-5)
+                            self.decrement_peice_number(taker_peice.type, 3)
                     if move[1] == taker_peice.col-i: #if its backwards and to the right
                         if i == 2:
                             self.delete_peice(move[0]-1,move[1]+1)
+                            self.decrement_peice_number(taker_peice.type, 1)
                         elif i == 4:
                             self.delete_peice(move[0]-1,move[1]+1)
                             self.delete_peice(move[0]-3,move[1]+3)
+                            self.decrement_peice_number(taker_peice.type, 2)
                         elif i == 6:
                             self.delete_peice(move[0]-1,move[1]+1)
                             self.delete_peice(move[0]-3,move[1]+3)
                             self.delete_peice(move[0]-5,move[1]-5)
+                            self.decrement_peice_number(taker_peice.type, 3)
                 return
 
             elif taker_peice.direction == +1 or taker_peice.king:
@@ -254,20 +289,25 @@ class Board():
                         elif i == 4:
                             self.delete_peice(move[0]+1,move[1]-1)
                             self.delete_peice(move[0]+3,move[1]-3)
+                            self.decrement_peice_number(taker_peice.type, 2)
                         elif i == 6:
                             self.delete_peice(move[0]+1,move[1]-1)
                             self.delete_peice(move[0]+3,move[1]-3)
                             self.delete_peice(move[0]+5,move[1]-5)
+                            self.decrement_peice_number(taker_peice.type, 3)
                     if move[1] == taker_peice.col-i: #if its forward and to the left
                         if i == 2:
                             self.delete_peice(move[0]+1, move[1]+1)
+                            self.decrement_peice_number(taker_peice.type, 1)
                         elif i == 4:
                             self.delete_peice(move[0]+1, move[1]+1)
                             self.delete_peice(move[0]+3,move[1]+3)
+                            self.decrement_peice_number(taker_peice.type, 2)
                         elif i == 6:
                             self.delete_peice(move[0]+1, move[1]+1)
                             self.delete_peice(move[0]+3,move[1]+3)
                             self.delete_peice(move[0]+5,move[1]+5)
+                            self.decrement_peice_number(taker_peice.type, 3)
 
     def delete_peice(self, row, col):
         """

@@ -8,7 +8,10 @@ FPS = 60
 
 #set window size and caption
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Draughts - By Candidate 184513 :)")
+pygame.display.set_caption("Draughts")
+icon = pygame.image.load('icon.png')
+pygame.display.set_icon(icon)
+
 
 def get_square_coords_from_pos(position):
     x, y = position
@@ -43,6 +46,18 @@ def main():
                 row, col = get_square_coords_from_pos(position)
                 game.click(row, col)
 
+                #check if its in the button area
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                position = pygame.mouse.get_pos()
+                x, y = position
+                button_result = game.menu.difficulty_buttons_click_handler(WINDOW, x,y)
+                if button_result == "Easy":
+                    game.set_difficulty("Easy")
+                elif button_result == "Med":
+                    game.set_difficulty("Med")
+                elif button_result == "Hard":
+                    game.set_difficulty("Hard")
 
 
         game.update()
