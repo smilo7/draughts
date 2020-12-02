@@ -47,7 +47,7 @@ class draughts_AI:
                 beta = min(beta, min_evaluation)
                 if beta <= alpha:
                     break
-                if min_evaluation == evaluation: #if the max_evaluation is the same as the current one, then update the running best possible state/move
+                if min_evaluation == evaluation: #if the min_evaluation is the same as the current one, then update the running best possible state/move
                     best_state = possible_state
             #print(min_evaluation, best_state)
             return min_evaluation, best_state

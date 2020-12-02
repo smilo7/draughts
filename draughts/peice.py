@@ -119,7 +119,11 @@ class Peice:
 
         for direction, moves in self.valid_moves.items():
             if (self.valid_move_for_direction(direction) or self.king):
+                #only draw the last move
+                #print(moves[0][-1])
                 for move in moves:
+
+                    #print(move[0])
                     if (len(move)!=0):
                         #print("drawing", move)
                         move = move[0]

@@ -5,7 +5,7 @@ class Button:
     """
     This makes button-like functionality for pygame.
     """
-    def __init__(self, x, y, width, height, difficulty):
+    def __init__(self, x, y, width, height, value="Hard"):
         self.x = x
         self.y = y
         self.width = width
@@ -13,12 +13,13 @@ class Button:
         self.colour = BLACK
         self.clicked_colour = DARK_GREY
         self.pressed = False
-        self.difficulty = difficulty
+        self.value = value
 
 
     def draw(self, window, font):
         pygame.draw.rect(window, self.colour, [self.x, self.y, self.width, self.height])
-        label = font.render(self.difficulty, 1, WHITE)
+        pygame.draw.rect(window, DARK_GREY, [self.x, self.y, self.width, self.height], 2)
+        label = font.render(self.value, 1, WHITE)
         window.blit(label, (self.x+5, self.y+5))
 
     def clicked(self):
@@ -37,3 +38,6 @@ class Button:
             return True
         else:
             return False
+
+    def pop_up(self, window, x,y):
+        pygame.draw.rect(window, WHITE, (0, self.width, self.width, self.height/4))

@@ -34,7 +34,35 @@ class Board():
         """
         calculates the score of the board
         """
-        return self.black_peices - self.red_peices
+        peice_value = 1
+        king_value = 2
+
+        reds_score = 0#self.red_peices
+        blacks_score = 0 #self.black_peices
+
+        reds = self.return_all_peices_type("R")
+        blacks = self.return_all_peices_type("B")
+
+        for peice in reds:
+            if peice.row < 5:
+                reds_score += 2
+            else:
+                reds_score += 1
+
+        for peice in blacks:
+            if peice.row > 2:
+                blacks_score += 2
+            else:
+                blacks_score += 1
+
+        print("scores",blacks_score, reds_score)
+
+        #check formation
+
+
+        #check if peice is in latter half
+        return blacks_score - reds_score
+        #return (self.black_peices - self.red_peices) + (self.red_kings*king_value - self.black_king*king_value)
 
     def return_board(self):
         return self.board
@@ -142,10 +170,10 @@ class Board():
         """
         draws the backround of the draughts board
         """
-        window.fill(LIGHT_BROWN)
+        window.fill(DARK_BROWN)
         for row in range(0, ROWS):
             for col in range (row % 2, COLS, 2):
-                pygame.draw.rect(window, DARK_BROWN, (row*SQUARE_SIZE, col*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(window, LIGHT_BROWN, (row*SQUARE_SIZE, col*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_peices(self, window):
         """
@@ -178,7 +206,7 @@ class Board():
                     self.clicked_peice = self.get_peice(x, y)
                     #check legal moves for this peice and store in its valid moves field
                     self.clicked_peice.valid_moves = self.legal_moves(self.clicked_peice)
-
+                    print(self.clicked_peice.valid_moves)
             #if a peice has not been clicked, check if there is any legal moves for that peice at the location clicked
             elif (self.clicked_peice != None): #make sure there is a currently selected peice
                 if self.clicked_peice.valid_move_at_coords(x, y): #if peice contains x and y as a valid move
@@ -278,7 +306,6 @@ class Board():
                             self.delete_peice(move[0]-3,move[1]+3)
                             self.delete_peice(move[0]-5,move[1]-5)
                             self.decrement_peice_number(taker_peice.type, 3)
-                return
 
             elif taker_peice.direction == +1 or taker_peice.king:
                 if move[0] == taker_peice.row-i:
@@ -366,9 +393,31 @@ class Board():
 
         #if forced jumping is on, then only return last move
         if self.force_hops:
-            pass
+            if len(moves["L"][0]) > 1:
+                #clear opposite direction as only forced capture allowed.
+                moves["R"]
+            #if there are any moves, and the last move in the list of moves isnt empty
+            print("here,",moves["L"])
+            if len(moves["L"][0]) != 0:
+                print(moves["L"][0])
+                print(moves["L"][0][-1])
+                if moves["L"][0][-1] != 0:
+                    #set the only possible move to the last one
+                    moves["L"] = [[moves["L"][0][-1]]]
+
+            if len(moves["R"][0]) > 1:
+                #clear opposite direction as only forced capture allowed.
+                moves["L"]
+            #if there are any moves, and the last move in the list of moves isnt empty
+            if len(moves["R"][0]) != 0:
+                if moves["R"][0][-1] != 0:
+                    #set the only possible move to the last one
+                    moves["R"] = [[moves["R"][0][-1]]]
 
         return moves
+
+    def check_for_captures(self, peice, moves):
+        pass
 
 
     def legal_moves_left(self, peice):

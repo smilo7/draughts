@@ -1,10 +1,10 @@
 import pygame
-from .constants import BLACK, RED, WIDTH, HEIGHT, LIGHT_GREY, DARK_GREY, GREEN
+from .constants import WHITE, BLACK, RED, WIDTH, HEIGHT, LIGHT_GREY, DARK_GREY, GREEN
 from .button import Button
 
 class Menu:
     """
-    This makes a simple menu.
+    This makes a menu for checkers game.
     """
     def __init__(self, x, y, width, height, font):
         self.x = x
@@ -14,6 +14,7 @@ class Menu:
         self.colour = BLACK
         self.font = font
         self.buttons = self.make_buttons()
+        self.instructions = Button(WIDTH*0.5, HEIGHT*0.95, 130, 80,"Controls/Rules")
 
 
     def draw(self, window, turn, num_peices):
@@ -21,9 +22,10 @@ class Menu:
         self.border(window)
         self.turns(window, turn)
         self.taken_peices(window, num_peices)
-        self.controls(window)
+        #self.controls(window)
         self.draw_difficulty_buttons(window)
         self.difficulty_buttons_title(window)
+        self.instructions.draw(window, self.font)
 
 
     def border(self, window):
@@ -72,6 +74,14 @@ class Menu:
         for button in self.buttons:
             if button.check_mouse(x, y):
                 button.clicked()
-                return button.difficulty
+                return button.value
             else:
                 button.unclick()
+
+    def instructions_click_handler(self, window, x,y):
+        if self.instructions.check_mouse(x,y):
+            self.instructions.clicked()
+            self.instructions.pop_up(window, x,y)
+            return self.instructions.value
+        else:
+            self.instructions.unclick()

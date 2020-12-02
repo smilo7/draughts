@@ -48,9 +48,13 @@ def main():
 
                 #check if its in the button area
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            #for buttons in menu
+            if event.type == pygame.MOUSEBUTTONUP:
                 position = pygame.mouse.get_pos()
                 x, y = position
+
+                game.menu.instructions_click_handler(WINDOW, x,y)
+
                 button_result = game.menu.difficulty_buttons_click_handler(WINDOW, x,y)
                 if button_result == "Easy":
                     game.set_difficulty("Easy")
