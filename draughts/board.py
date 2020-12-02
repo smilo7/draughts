@@ -19,7 +19,7 @@ class Board():
         self.hopped_peices = {}
         self.red_peices = 0
         self.black_peices = 0
-        self.force_hops = False
+        self.force_hops = True
         self.black_king = 0
         self.red_kings = 0
         self.winner = None
@@ -55,7 +55,7 @@ class Board():
             else:
                 blacks_score += 1
 
-        print("scores",blacks_score, reds_score)
+        #print("scores",blacks_score, reds_score)
 
         #check formation
 
@@ -390,34 +390,31 @@ class Board():
         moves = {"L": None, "R": None}
         moves["L"] = self.legal_moves_left(peice)
         moves["R"] = self.legal_moves_right(peice)
-
         #if forced jumping is on, then only return last move
         if self.force_hops:
-            if len(moves["L"][0]) > 1:
-                #clear opposite direction as only forced capture allowed.
-                moves["R"]
-            #if there are any moves, and the last move in the list of moves isnt empty
-            print("here,",moves["L"])
-            if len(moves["L"][0]) != 0:
-                print(moves["L"][0])
-                print(moves["L"][0][-1])
-                if moves["L"][0][-1] != 0:
-                    #set the only possible move to the last one
-                    moves["L"] = [[moves["L"][0][-1]]]
 
-            if len(moves["R"][0]) > 1:
-                #clear opposite direction as only forced capture allowed.
-                moves["L"]
-            #if there are any moves, and the last move in the list of moves isnt empty
-            if len(moves["R"][0]) != 0:
-                if moves["R"][0][-1] != 0:
-                    #set the only possible move to the last one
+            if(self.check_for_captures(moves)):
+                if (len(moves["L"]) > len(moves["R"])):
+                    moves["R"] = [[]] #clear other moves
+                    moves["L"] = [[moves["L"][0][-1]]]
+                else:
+                    moves["L"] = [[]]
                     moves["R"] = [[moves["R"][0][-1]]]
 
         return moves
 
-    def check_for_captures(self, peice, moves):
-        pass
+    def check_for_captures(self, moves):
+        """
+        check if there are any possible captures for a list of moves.
+        returns true or False
+        """
+        possible_capture_count = False
+        for direction, movez in moves.items():
+            print(movez)
+            if len(movez) > 1: #checks if there is more than one move
+                print("YASSS", movez)
+                possible_capture_count = True
+        return possible_capture_count
 
 
     def legal_moves_left(self, peice):

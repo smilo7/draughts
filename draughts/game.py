@@ -27,7 +27,7 @@ class Game():
             self.update() #call update here so that screen and menu updates before the major lag of the ai lol
             #self.menu.turns(self.window, self.whos_turn_is_it())
             #pygame.display.update() #call display update otherwise move isnt refreshed intime to duisplay on menu
-            self.computer_move()
+            #self.computer_move()
 
 
         else:
