@@ -21,6 +21,7 @@ class draughts_AI:
         #base case, once this is hit the recursion unravels.
         if current_depth == 0 or current_board.get_winner() != None:
             #print("SEARCHED,", self.states_searched)
+            #print("eval", current_board.evaluate())
             return current_board.evaluate(), current_board#return the score
 
         #black is the maximiser as this is the colour our ai plays

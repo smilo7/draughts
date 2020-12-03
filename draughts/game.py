@@ -39,6 +39,7 @@ class Game():
         print("SEARCHING WITH DIFFICULTY", self.search_depth)
         evaluation, new_board = self.computer.minimax(self.board, self.search_depth, True, alpha=float('-inf'), beta=float('inf'))
         #update board
+        print("minimax eval", evaluation)
         if new_board != None:
             """
             sometimes the ai will return None if it doesnthave any possible moves left. This is a possible win state

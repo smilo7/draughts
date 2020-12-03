@@ -14,7 +14,12 @@ class Peice:
         self.direction = direction #forward +1 or backwards -1
         self.clicked = None
         self.valid_moves = {"L": [], "R": []} #valid moves from peices current position, none by default (until clicked)
-        self.hops = {"L": [], "R": []}
+        #self.hops = {"L": [], "R": []}
+        self.hops = {"L":{},"R":{}}
+
+    def reset_moves(self):
+        self.valid_moves = {"L": [], "R": []}
+        self.hops = {"L":{},"R":{}}
 
     def check_make_king(self):
         if (self.direction == -1):
@@ -46,7 +51,9 @@ class Peice:
         any_valid_moves = False
         for direction, moves in self.valid_moves.items():
             #print("HERE!", moves)
+            print("valid moves", moves)
             for move in moves:
+                print("valid move", move)
                 if len(move[0]) > 0:
                     any_valid_moves = True
         return any_valid_moves

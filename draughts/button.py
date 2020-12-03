@@ -32,7 +32,7 @@ class Button:
         self.colour = BLACK
 
     def check_mouse(self, x, y):
-        print("chcking mouse", x, y, self.x, self.y)
+        #print("chcking mouse", x, y, self.x, self.y)
 
         if self.x < x < self.x+self.width and self.y < y < self.y+self.height:
             return True
