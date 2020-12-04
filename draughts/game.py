@@ -27,7 +27,7 @@ class Game():
             self.update() #call update here so that screen and menu updates before the major lag of the ai lol
             #self.menu.turns(self.window, self.whos_turn_is_it())
             #pygame.display.update() #call display update otherwise move isnt refreshed intime to duisplay on menu
-            #self.computer_move()
+            self.computer_move()
 
 
         else:
@@ -49,10 +49,8 @@ class Game():
             print("ai move done")
             self.computer.states_searched = 0 #reset searched states
         else:
-            #set the winner
-            self.board.winner = "R"
-
-
+            #get the winner no possible states left
+            print("the winner is:", self.board.get_winner())
         #time.sleep(1000)
         self.change_turn()
 
@@ -65,10 +63,13 @@ class Game():
         """
         if difficulty == "Easy":
             self.search_depth = 1
+            self.computer.update_difficulty(self.search_depth, difficulty)
         elif difficulty == "Med":
             self.search_depth = 3
+            self.computer.update_difficulty(self.search_depth, difficulty)
         elif difficulty == "Hard":
             self.search_depth = 5
+            self.computer.update_difficulty(self.search_depth, difficulty)
 
     def click(self, row, col):
         """

@@ -34,6 +34,12 @@ class Board():
         """
         calculates the score of the board
         """
+        return (self.black_peices - self.red_peices) #+ (self.red_kings*king_value - self.black_king*king_value)
+
+    def evaluate_med(self):
+        return (self.black_peices - self.red_peices) + (self.black_kings*0.5 - self.red_kings*0.5)
+
+    def evaluate_hard(self):
         peice_value = 1
         king_value = 2
 
@@ -55,14 +61,8 @@ class Board():
             else:
                 blacks_score += 1
 
-        #print("scores",blacks_score, reds_score)
+        return blacks_score - reds_score + (self.black_kings*0.5 - self.red_kings*0.5)
 
-        #check formation
-
-
-        #check if peice is in latter half
-        #return blacks_score - reds_score
-        return (self.black_peices - self.red_peices) #+ (self.red_kings*king_value - self.black_king*king_value)
 
     def return_board(self):
         return self.board
@@ -278,6 +278,25 @@ class Board():
             self.red_peices = self.red_peices - amount
             #print("red peices left", self.red_peices)
 
+    def check_if_king(self, row, col):
+        """
+        checks if there is a king at the given coordinates
+        this is used to implement regicide
+        returns true if there is a king there, returns false otherwise
+        """
+        peice = self.get_peice(row, col)
+        if peice != None:
+            return peice.king
+        return False
+
+    def regicide(self, taker_peice, row, col):
+        """
+        for a given peice and the coordinates of the peice is going to take
+        check if it can perform regicide. ie become a king
+        """
+        if self.check_if_king(row, col):
+            taker_peice.king = True
+
     def take_peices_diagonal(self, taker_peice, move):
         #find any squares inbetween the taker_peice row and col and the coordinates of move
         #check if there is a peice at this coordinate
@@ -294,6 +313,7 @@ class Board():
                         if i == 2:
                             self.delete_peice(move[0]-1,move[1]-1)
                             self.decrement_peice_number(taker_peice.type, 1)
+                            self.regicide(taker_peice, move[0]-1,move[1]-1)
                         elif i == 4:
                             self.delete_peice(move[0]-1,move[1]-1)
                             self.delete_peice(move[0]-3,move[1]-3)
@@ -323,6 +343,7 @@ class Board():
                         if i == 2:
                             self.delete_peice(move[0]+1,move[1]-1)
                             self.decrement_peice_number(taker_peice.type, 1)
+                            self.regicide(taker_peice, move[0]+1, move[1]-1)
                         elif i == 4:
                             self.delete_peice(move[0]+1,move[1]-1)
                             self.delete_peice(move[0]+3,move[1]-3)

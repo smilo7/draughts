@@ -14,6 +14,7 @@ class Button:
         self.clicked_colour = DARK_GREY
         self.pressed = False
         self.value = value
+        self.pop_up_win = False
 
 
     def draw(self, window, font):
@@ -39,5 +40,11 @@ class Button:
         else:
             return False
 
-    def pop_up(self, window, x,y):
-        pygame.draw.rect(window, WHITE, (0, self.width, self.width, self.height/4))
+    def draw_pop_up(self, window, font):
+        pygame.draw.rect(window, WHITE, (0, 0, 400, 400))
+
+        text = font.render("Press ESC to quit, R to restart", 1, BLACK)
+        text2 = font.render("Rules:", 1, BLACK)
+        text_width, text_height = text.get_size()
+        text_rect = text.get_rect(center=(400/2,10))
+        window.blit(text, text_rect)

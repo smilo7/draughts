@@ -115,6 +115,9 @@ class Peice:
 
     def draw_clicked(self, window):
         pygame.draw.circle(window, self.clicked_colour, (self.col * SQUARE_SIZE + self.size + self.size/4, self.row*SQUARE_SIZE + self.size + self.size/4), self.size)
+        if self.king:
+            crown = pygame.image.load('crown.png')
+            window.blit(crown, (self.col * SQUARE_SIZE + self.size-7,self.row * SQUARE_SIZE + self.size-7))
 
     def draw_valid_moves(self, window):
         """

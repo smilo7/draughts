@@ -7,6 +7,21 @@ class draughts_AI:
     def __init__(self):
         self.states_searched = 0
         self.depth = MAX_DEPTH
+        self.heuristic = "Hard"
+
+
+    def update_difficulty(self, depth, heuristic):
+        self.depth = depth
+        self.heuristic = heuristic
+
+
+    def evaluation_heuristic(self, current_board):
+        if self.heuristic == "Easy":
+            return current_board.evaluate()
+        elif self.heuristic == "Med":
+            return current_board.evaluate_med()
+        else:
+            return current_board.evaluate_hard()
 
 
     def minimax(self, current_board, current_depth, is_max, alpha, beta):
@@ -22,7 +37,8 @@ class draughts_AI:
         if current_depth == 0 or current_board.get_winner() != None:
             #print("SEARCHED,", self.states_searched)
             #print("eval", current_board.evaluate())
-            return current_board.evaluate(), current_board#return the score
+            #return current_board.evaluate(), current_board#return the score
+            return self.evaluation_heuristic(current_board), current_board
 
         #black is the maximiser as this is the colour our ai plays
         if is_max:
