@@ -1,6 +1,8 @@
 # Draughts Game
 An implementation of draughts (checkers) in python and pygame.
 
+![screenshot of the board][screenshot.png]
+
 ## Installation instructions
 To run the game you will need a working version of python 3 and pygame.
 The game has been tested using python 3.8.6 although it may well work using
